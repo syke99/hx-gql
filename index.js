@@ -36,11 +36,13 @@ htmx.defineExtension('hx-gql', {
             })).then((plugin) => {
                     extismPluginResult(plugin, query).
                         then((result) => {
-                            let xhr = event.detail.xhr
+                            if (result !== null) {
+                                let xhr = event.detail.xhr
 
-                            xhr.resultType = "text"
+                                xhr.resultType = "text"
             
-                            xhr.result = result.text()
+                                xhr.result = result.text()
+                            }
                         }).catch((error) => {
                             handleError(element, error);
                             return;
@@ -86,7 +88,17 @@ async function createPluginFromRequest(handler, config) {
 }
 
 async function extismPluginResult(plugin, query) {
-    return await plugin.call(query)
+    const exists = await pluginFunctionExists(plugin, query)
+
+    if (exists) {
+        return await plugin.call(query)
+    }
+    
+    return null
+}
+
+async function pluginFunctionExists(plugin, query) {
+    return await plugin.functionExists(query)
 }
 
 function extractRequestDetails(element) {
