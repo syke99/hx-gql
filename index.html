@@ -1,0 +1,7 @@
+<div hx-ext="include-vals">
+    <!-- if you have multiple different WASM modules, speficy which to use by replacing [module] in the path below with the name given to the plugin whenever registering -->
+    <!-- value of "include-vals" is comma separated list of key-value pairs -->
+    <div hx-get="/gql/[module]" hx-ext="hx-gql" query="[queryName]" operation="[operationName]" include-vals="">
+
+    </div>
+</div>
