@@ -25,7 +25,7 @@ htmx.defineExtension('hx-gql', {
                 handler = retrieveHandlerModule(query);
             }
 
-            if (!handler) {
+            if (handler !== null) {
                 handleError(element, "no available handler module for GraphQL request");
                 return;
             }
