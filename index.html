@@ -67,8 +67,8 @@
                 always be sanitized before being updated to prevent any unsafe code 
                 being executed by your web page
              -->
-            <div hx-get="/helloWorld" hx-ext="hx-gql" query="hello" vars="language:English">
-        
+            <div hx-target="this" hx-swap="innerHTML" hx-trigger="click" hx-get="/helloWorld" hx-ext="hx-gql" query="hello" vars="language:English">
+                Click me!!
             </div>
         </div>
     </body>
