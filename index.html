@@ -8,13 +8,21 @@
         <script src="https://unpkg.com/htmx.org/dist/ext/include-vals.js"></script>
         <script src="./index.js"></script>
         <script>
-            registerHandler("hello-world", "/assets/wasm/hello_world.wasm")
+            registerGqlEndpoint("localhost:3000")
+
+            registerHandler("helloWorld", (response) => {
+                let resText = new TextDecoder().decode(response);
+
+                let res = `<div>${resText}</div>`;
+
+                return res
+            })
         </script>
     </head>
     <body>
         <div>
             <!-- if you have multiple different WASM modules, speficy which to use by replacing [module] in the path below with the name given to the plugin whenever registering -->
-            <div hx-get="/gql/hello-world" hx-ext="hx-gql" query="hello">
+            <div hx-get="/gql/helloWorld" hx-ext="hx-gql" query="hello">
         
             </div>
         </div>

@@ -1,4 +1,5 @@
-import { makeGreaphQLRequest, registerHandlerModule } from './plugin'
+import { makeGreaphQLRequest } from './plugin'
+import { getErrHandler, registerErrHandler, registerHandlerSetup, registerGraphQLEndpoint } from './setup'
 
 htmx.defineExtension('hx-gql', {
     onEvent : function (name, event) {
@@ -9,11 +10,13 @@ htmx.defineExtension('hx-gql', {
         }
 
         if (name === "htmx:afterRequest") {
+            const verb = event.detail.requestConfig.verb;
+
             const path = event.detail.requestConfig.path;
 
             const element = event.detail.etl;
 
-            makeGreaphQLRequest(path, element).
+            makeGreaphQLRequest(verb, path, element).
                 then((result) => {
                     let xhr = event.detail.xhr;
 
@@ -32,22 +35,25 @@ htmx.defineExtension('hx-gql', {
 
         if (name === "handleError") {
             // call custom error handler or log error
-            return errHandlerCallback ? errHandlerCallback() 
-                : console.log(event.detail.error);
+            let errHandler = getErrHandler();
+            return errHandler ? errHandler(event.detail.error) 
+                : console.error(event.detail.error);
         }
     }
 })
 
-export function registerHandler(key, path) {
-    registerHandlerModule(key, path)
-}
-
-let errHandlerCallback = null;
-
-export function errorHandler(callback) {
-    errHandlerCallback = callback;
-}
-
 function handleError(element, error) {
     htmx.trigger(element, "handleError", { error: error });
+}
+
+export function registerGqlEndpoint(endpoint) {
+    registerGraphQLEndpoint(endpoint)
+}
+
+export function registerHandler(key, handler) {
+    registerHandlerSetup(key, handler)
+}
+
+export function registerErrorHandler(errHandler) {
+    registerErrHandler(errHandler)
 }

@@ -1,65 +1,21 @@
-import createPlugin from '@extism/extism';
-
-let wasmModules = new Map();
-
-export function registerHandlerModule(key, path) {
-    wasmModules.set(key, { path: path })
-}
-
-function retrieveHandlerModule(key) {
-    return wasmModules.has(key) ? wasmModules.get(key) : null;
-}
-
-async function createPluginFromRequest(handler, config) {
-    return await createPlugin(handler, {
-        useWasi: true,
-        config: config
-    })
-}
-
-async function extismPluginResult(plugin, query) {
-    const exists = await pluginFunctionExists(plugin, query)
-
-    if (exists) {
-        return await plugin.call(query)
-    }
-    
-    return null
-}
-
-async function pluginFunctionExists(plugin, query) {
-    return await plugin.functionExists(query)
-}
+import { getGqlEndpoint, retrieveHandler, retrieveHandlerModule, retrieveQuery } from './setup'
 
 function extractRequestDetails(element) {
-    let query = element.getAttribute("querry") || null;
+    let details = [];
+    
+    let queryKey = element.getAttribute("query") || null;
 
-    let operation = element.getAttribute("opperation") || null;
+    details.push(retrieveQuery(queryKey));
 
-    let values = element.getAttribute("include-vals") || null;
+    details.push(eval("{" + element.getAttribute("include-vals") + "}") || null);
 
-    return values ? [query, operation, eval("{" + values + "}")]
-        : [query, operation, null]
-}
-
-function getHandler(path) {
-    let handler;
-
-    let pathSplit = path.split("/");
-
-    if (pathSplit.length > 1) {
-        handler = retrieveHandlerModule(pathSplit[1]);
-    } else {
-        handler = retrieveHandlerModule(query);
-    }
-
-    if (handler === null) {
-        return null
-    }
+    return details;
 }
 
 function makeHandlerPromise(path) {
-    let handler = getHandler(path)
+    let handlerKey = path.split("/")[1];
+
+    let handler = retrieveHandler(handlerKey);
 
     return new Promise((res, rej) => {
         if (handler === null) {
@@ -70,29 +26,33 @@ function makeHandlerPromise(path) {
     })
 }
 
-export async function makeGreaphQLRequest(path, element) {
+export async function makeGreaphQLRequest(verb, path, element) {
     let handlerPromise = makeHandlerPromise(path)
 
     handlerPromise.then((handler) => {
-        let { query, op, vals } = extractRequestDetails(element)
+        let { query, vals } = extractRequestDetails(element)
 
-        let configJSON = JSON.stringify({
-            operation: op,
+        if (query === null) {
+            throw new Error("requested query not registered");
+        }
+
+        let queryBody = JSON.stringify({
+            query: query,
             values: vals
         })
 
-        let pluginPromise = createPluginFromRequest(handler, configJSON)
+        let endpoint = getGqlEndpoint();
 
-        pluginPromise.then((plugin) => {
-            let resultPromise = extismPluginResult(plugin, query)
-
-            resultPromise.then((res) => {
-                return res.text()
-            }).catch((err) => {
-                throw err
-            })
-        }).catch((error) => {
-            return error
+        fetch(endpoint, {
+            method: verb,
+            headers: {
+                "content-type": "application/json",
+            },
+            body: queryBody,
+        }).then((result) => {
+            handler(result);
+        }).catch((err) => {
+            throw err
         })
     }, (err) => {
         return err
