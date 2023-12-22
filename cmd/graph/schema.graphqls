@@ -1,0 +1,21 @@
+# GraphQL schema example
+#
+# https://gqlgen.com/getting-started/
+
+type Response {
+  language: String!
+  res: String!
+}
+
+type Query {
+  responses(language: String!): [Response!]!
+}
+
+input NewResponse {
+  language: String!
+  response: String!
+}
+
+type Mutation {
+  createResponse(input: NewResponse!): Response!
+}

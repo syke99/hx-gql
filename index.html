@@ -8,10 +8,11 @@
         <script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
         <script src="./hx-gql.js">//this will end up being a CDN link, or an NPM package, or even a downloadable copy</script>
         <script>
-            registerGqlEndpoint("localhost:3000")
+            registerGqlEndpoint("localhost:8080/gql")
 
-            const helloQuery = `    query getHelloResponse($language: String!)  {
+            const helloQuery = `    query Response($language: String!)  {
                 responses(language: $language){
+                    language
                     response
                 }
             }`
@@ -28,7 +29,7 @@
 
                 let resJSON = JSON.parse(resText)
 
-                let res = `<div>${resJSON.responses.response}</div>`;
+                let res = `<div>${resJSON.data.responses.res}</div>`;
 
                 return res
             })
