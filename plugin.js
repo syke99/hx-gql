@@ -1,3 +1,4 @@
+import createPlugin from '@extism/extism';
 
 let wasmModules = new Map();
 
