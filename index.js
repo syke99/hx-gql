@@ -1,5 +1,3 @@
-import createPlugin from '@extism/extism';
-
 import { makeGreaphQLRequest } from './plugin'
 
 htmx.defineExtension('hx-gql', {
