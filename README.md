@@ -1,2 +1,2 @@
 # hx-gql
-an extension to use gql endpoints + WASM modules with HTMX
+an extension to use gql endpoints + custom result handlers with HTMX
