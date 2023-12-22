@@ -2,8 +2,8 @@ import createPlugin from '@extism/extism';
 
 let wasmModules = new Map();
 
-function registerHandlerModule(key, path) {
-    wasmModules.set(key, {path: path})
+export function registerHandlerModule(key, path) {
+    wasmModules.set(key, { path: path })
 }
 
 function retrieveHandlerModule(key) {

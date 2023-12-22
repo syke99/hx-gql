@@ -6,12 +6,15 @@
         <meta name="viewport" content="width=device-width,initial-scale=1">
         <link rel="stylesheet" href="">
         <script src="https://unpkg.com/htmx.org/dist/ext/include-vals.js"></script>
+        <script src="./index.js"></script>
+        <script>
+            registerHandler("hello-world", "/assets/wasm/hello_world.wasm")
+        </script>
     </head>
     <body>
-        <div hx-ext="include-vals">
+        <div>
             <!-- if you have multiple different WASM modules, speficy which to use by replacing [module] in the path below with the name given to the plugin whenever registering -->
-            <!-- value of "include-vals" is comma separated list of key-value pairs -->
-            <div hx-get="/gql/[module]" hx-ext="hx-gql" query="[queryName]" operation="[operationName]" include-vals="">
+            <div hx-get="/gql/hello-world" hx-ext="hx-gql" query="hello">
         
             </div>
         </div>

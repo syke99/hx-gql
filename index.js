@@ -1,4 +1,4 @@
-import { makeGreaphQLRequest } from './plugin'
+import { makeGreaphQLRequest, registerHandlerModule } from './plugin'
 
 htmx.defineExtension('hx-gql', {
     onEvent : function (name, event) {
@@ -37,6 +37,10 @@ htmx.defineExtension('hx-gql', {
         }
     }
 })
+
+export function registerHandler(key, path) {
+    registerHandlerModule(key, path)
+}
 
 let errHandlerCallback = null;
 
