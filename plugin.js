@@ -71,7 +71,7 @@ function makeHandlerPromise(path) {
 export async function makeGreaphQLRequest(path, element) {
     let handlerPromise = makeHandlerPromise(path)
 
-    handlerPromise.then((res) => {
+    handlerPromise.then((handler) => {
         let { query, op, vals } = extractRequestDetails(element)
 
         let configJSON = JSON.stringify({
