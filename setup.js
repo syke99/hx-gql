@@ -20,7 +20,7 @@ export function retrieveHandler(key) {
 
 let queries = new Map();
 
-export function registerQuery(key, query) {
+export function registerQuerySetup(key, query) {
     queries.set(key, query)
 }
 

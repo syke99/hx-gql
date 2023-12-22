@@ -1,5 +1,5 @@
 import { makeGreaphQLRequest } from './plugin'
-import { getErrHandler, registerErrHandler, registerHandlerSetup, registerGraphQLEndpoint } from './setup'
+import { getErrHandler, registerErrHandler, registerHandlerSetup, registerGraphQLEndpoint, registerQuerySetup } from './setup'
 
 htmx.defineExtension('hx-gql', {
     onEvent : function (name, event) {
@@ -47,13 +47,17 @@ function handleError(element, error) {
 }
 
 export function registerGqlEndpoint(endpoint) {
-    registerGraphQLEndpoint(endpoint)
+    registerGraphQLEndpoint(endpoint);
 }
 
 export function registerHandler(key, handler) {
-    registerHandlerSetup(key, handler)
+    registerHandlerSetup(key, handler);
+}
+
+export function registerQuery(key, query) {
+    registerQuerySetup(key, query);
 }
 
 export function registerErrorHandler(errHandler) {
-    registerErrHandler(errHandler)
+    registerErrHandler(errHandler);
 }

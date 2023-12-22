@@ -1,4 +1,4 @@
-import { getGqlEndpoint, retrieveHandler, retrieveHandlerModule, retrieveQuery } from './setup'
+import { getGqlEndpoint, retrieveHandler, retrieveQuery } from './setup'
 
 function extractRequestDetails(element) {
     let details = [];
@@ -13,7 +13,7 @@ function extractRequestDetails(element) {
 }
 
 function makeHandlerPromise(path) {
-    let handlerKey = path.split("/")[1];
+    let handlerKey = path.replace("/", "")
 
     let handler = retrieveHandler(handlerKey);
 
@@ -38,7 +38,7 @@ export async function makeGreaphQLRequest(verb, path, element) {
 
         let queryBody = JSON.stringify({
             query: query,
-            values: vals
+            variables: vals
         })
 
         let endpoint = getGqlEndpoint();
