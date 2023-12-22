@@ -57,6 +57,7 @@ function getHandler(path) {
         return null
     }
 }
+
 function makeHandlerPromise(path) {
     let handler = getHandler(path)
 
