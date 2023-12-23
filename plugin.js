@@ -1,3 +1,5 @@
+import { getGqlEndpoint, retrieveHandler } from './setup'
+
 export function setupOverride(event) {
     event.detail.headers["Content-Type"] = "application/json";
 
@@ -13,6 +15,7 @@ export function setupOverride(event) {
 
     if (query === null) {
         // TODO: handle error
+        return
     }
 
     event.detail.parameters = JSON.stringify({
@@ -30,6 +33,7 @@ export function handleResponse(event) {
 
     if (handler === null) {
         // TODO: handle error
+        return;
     }
 
     event.detail.xhr.response = handler(event.detail.xhr.response);
