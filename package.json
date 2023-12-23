@@ -1,0 +1,14 @@
+{
+  "name": "hx-gql",
+  "version": "0.1.0",
+  "description": "an extension to use GraphQL endpoints + custom result handlers with HTMX",
+  "main": "hx-gql.js",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Quinn Millican",
+  "license": "BSD-3-Clause"
+}

@@ -15,7 +15,12 @@ Like many, you may have a strong distaste for state of Front End development and
 ====
 
 # Installation
-//TODO: package as an npm package and post it, and set up CDN that it can also be served from
+
+With NPM:
+
+```
+npm install hx-gql
+```
 
 # Caveats
 
