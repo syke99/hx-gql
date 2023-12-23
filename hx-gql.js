@@ -1,61 +1,30 @@
+import { handleResponse, setupOverride } from './plugin';
 import {
-    getErrHandler,
     registerErrHandler,
     registerHandlerSetup,
     registerQuerySetup,
     registerGraphQLEndpointSetup,
-    getGqlEndpoint,
-    retrieveHandler
 } from './setup'
 
 htmx.defineExtension('hx-gql', {
     onEvent : function (name, event) {
         if (name === "htmx:configRequest") {
-            event.detail.headers["Content-Type"] = "application/json";
-
-            let element = event.detail.elt;
-
-            let vals = element.getAttribute("vals") || null;
-
-            if (vals !== null) {
-                vals = eval(`{${vals}}`);
-            }
-
-            let query = element.getAttribute("query") || null;
-
-            if (query === null) {
-                // TODO: handle error
-            }
-
-            event.detail.parameters = JSON.stringify({
-                query: query,
-                variables: vals
-            });
-
-            event.detail.target = getGqlEndpoint();
+            setupOverride(event);
         }
 
         if (name === "htmx:afterRequest") {
-            const path = event.detail.requestConfig.path;
-
-            let handler = retrieveHandler(path.replace("/", ""));
-
-            if (handler === null) {
-                // TODO: handle error
-            }
-
-            event.detail.xhr.response = handler(event.detail.xhr.response);
+            handleResponse(event);
         }
 
-        if (name === "handleError") {
-            // call custom error handler or log error
-            let errHandler = getErrHandler();
+        // if (name === "handleError") {
+        //     // call custom error handler or log error
+        //     let errHandler = getErrHandler();
             
-            errHandler ? errHandler(event.detail.error) 
-                : console.error(event.detail.error);
+        //     errHandler ? errHandler(event.detail.error) 
+        //         : console.error(event.detail.error);
             
-            return true;
-        }
+        //     return true;
+        // }
     },
 
     encodeParameters : function(xhr, parameters, element) {
@@ -64,9 +33,9 @@ htmx.defineExtension('hx-gql', {
     }
 })
 
-function handleError(element, error) {
-    htmx.trigger(element, "handleError", { error: error });
-}
+// function handleError(element, error) {
+//     htmx.trigger(element, "handleError", { error: error });
+// }
 
 export function registerGqlEndpoint(endpoint) {
     registerGraphQLEndpointSetup(endpoint);

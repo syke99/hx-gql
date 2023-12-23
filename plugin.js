@@ -1,53 +1,36 @@
-import { getGqlEndpoint, retrieveHandler, retrieveQuery } from './setup'
+export function setupOverride(event) {
+    event.detail.headers["Content-Type"] = "application/json";
 
-function extractRequestDetails(element) {
-    let details = [];
-    
-    let queryKey = element.getAttribute("query") || null;
-
-    if (queryKey !== null) {
-        details.push(retrieveQuery(queryKey));
-    }
+    let element = event.detail.elt;
 
     let vals = element.getAttribute("vals") || null;
 
     if (vals !== null) {
-        details.push(eval(`{${vals}}`))
+        vals = eval(`{${vals}}`);
     }
 
-    return details;
-}
-
-export function makeGreaphQLRequest(path, element) {
-    let handler = retrieveHandler(path.replace("/", ""))
-
-    if (handler === null) {
-        return new Error("no handler found for specified key")
-    }
-
-    let { query, vals } = extractRequestDetails(element)
+    let query = element.getAttribute("query") || null;
 
     if (query === null) {
-        return new Error("requested query not registered");
+        // TODO: handle error
     }
 
-    let queryBody = JSON.stringify({
+    event.detail.parameters = JSON.stringify({
         query: query,
         variables: vals
-    })
+    });
 
-    let endpoint = getGqlEndpoint();
+    event.detail.target = getGqlEndpoint();
+}
 
-    fetch(endpoint, {
-        method: "POST",
-        mode: "cors",
-        headers: {
-            "content-type": "application/json",
-        },
-        body: queryBody,
-    }).then((result) => {
-        handler(result);
-    }).catch((err) => {
-        return err
-    })
+export function handleResponse(event) {
+    const path = event.detail.requestConfig.path;
+
+    let handler = retrieveHandler(path.replace("/", ""));
+
+    if (handler === null) {
+        // TODO: handle error
+    }
+
+    event.detail.xhr.response = handler(event.detail.xhr.response);
 }
