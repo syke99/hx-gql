@@ -51,7 +51,7 @@ A full working example can be found in the [example](directory). To run the exam
 cd example/client && npm install && npm run build && cd .. && go run server.go
 ```
 
-After running the above command, open your browser and navigate to `localhost:8080/gql`. Then run the mutation below.
+After running the above command, open your browser and navigate to `localhost:8080/playground`. Then run the mutation below.
 
 ```
 mutation CreateResponse{
