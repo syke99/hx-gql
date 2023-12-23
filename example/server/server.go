@@ -1,10 +1,11 @@
 package main
 
 import (
-	"github.com/syke99/example-gql/graph"
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/syke99/example-gql/gql/graph"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
@@ -20,9 +21,18 @@ func main() {
 
 	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{}}))
 
-	http.Handle("/", playground.Handler("GraphQL playground", "/gql"))
+	path := "..\\client\\dist"
+
+	_, err := os.Stat(path)
+	if err != nil {
+		panic(err)
+	}
+
+	http.Handle("/index", http.StripPrefix("/index", http.FileServer(http.Dir(path))))
+
+	http.Handle("/playground", playground.Handler("GraphQL playground", "/gql"))
 	http.Handle("/gql", srv)
 
-	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
+	log.Printf("connect to http://localhost:%s/playground for GraphQL playground", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 }

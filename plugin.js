@@ -5,56 +5,49 @@ function extractRequestDetails(element) {
     
     let queryKey = element.getAttribute("query") || null;
 
-    details.push(retrieveQuery(queryKey));
+    if (queryKey !== null) {
+        details.push(retrieveQuery(queryKey));
+    }
 
-    details.push(eval("{" + element.getAttribute("include-vals") + "}") || null);
+    let vals = element.getAttribute("vals") || null;
+
+    if (vals !== null) {
+        details.push(eval(`{${vals}}`))
+    }
 
     return details;
 }
 
-function makeHandlerPromise(path) {
-    let handlerKey = path.replace("/", "")
+export function makeGreaphQLRequest(path, element) {
+    let handler = retrieveHandler(path.replace("/", ""))
 
-    let handler = retrieveHandler(handlerKey);
+    if (handler === null) {
+        return new Error("no handler found for specified key")
+    }
 
-    return new Promise((res, rej) => {
-        if (handler === null) {
-            rej(new Error("no available handler module for GraphQL request"))
-        } else {
-            res(handler)
-        }
+    let { query, vals } = extractRequestDetails(element)
+
+    if (query === null) {
+        return new Error("requested query not registered");
+    }
+
+    let queryBody = JSON.stringify({
+        query: query,
+        variables: vals
     })
-}
 
-export async function makeGreaphQLRequest(verb, path, element) {
-    let handlerPromise = makeHandlerPromise(path)
+    let endpoint = getGqlEndpoint();
 
-    handlerPromise.then((handler) => {
-        let { query, vals } = extractRequestDetails(element)
-
-        if (query === null) {
-            throw new Error("requested query not registered");
-        }
-
-        let queryBody = JSON.stringify({
-            query: query,
-            variables: vals
-        })
-
-        let endpoint = getGqlEndpoint();
-
-        fetch(endpoint, {
-            method: verb,
-            headers: {
-                "content-type": "application/json",
-            },
-            body: queryBody,
-        }).then((result) => {
-            handler(result);
-        }).catch((err) => {
-            throw err
-        })
-    }, (err) => {
+    fetch(endpoint, {
+        method: "POST",
+        mode: "cors",
+        headers: {
+            "content-type": "application/json",
+        },
+        body: queryBody,
+    }).then((result) => {
+        handler(result);
+    }).catch((err) => {
         return err
     })
 }

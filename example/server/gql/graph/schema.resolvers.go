@@ -9,7 +9,7 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/syke99/example-gql/graph/model"
+	"github.com/syke99/example-gql/gql/graph/model"
 )
 
 // CreateResponse is the resolver for the createResponse field.

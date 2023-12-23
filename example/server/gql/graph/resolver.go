@@ -2,7 +2,7 @@ package graph
 
 //go:generate go run github.com/99designs/gqlgen generate
 
-import "github.com/syke99/example-gql/graph/model"
+import "github.com/syke99/example-gql/gql/graph/model"
 
 // This file will not be regenerated automatically.
 //

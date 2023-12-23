@@ -6,34 +6,7 @@
         <meta name="viewport" content="width=device-width,initial-scale=1">
         <link rel="stylesheet" href="">
         <script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
-        <script src="./hx-gql.js">//this will end up being a CDN link, or an NPM package, or even a downloadable copy</script>
-        <script>
-            registerGqlEndpoint("localhost:8080/gql")
-
-            const helloQuery = `    query Response($language: String!)  {
-                responses(language: $language){
-                    language
-                    response
-                }
-            }`
-
-            registerQuery("hello", helloQuery)
-
-            registerHandler("helloWorld", (response) => {
-                // hx-gql passes the resulting body of the gql call
-                // to handlers as a raw Uint8Array, so for this simple
-                // example, we just decode the response into a string
-                // and then parse that string into a JSON object
-                // so we can easily access the desired field
-                let resText = new TextDecoder().decode(response);
-
-                let resJSON = JSON.parse(resText)
-
-                let res = `<div>${resJSON.data.responses.res}</div>`;
-
-                return res
-            })
-        </script>
+        <script src="./main.js">//this will end up being a CDN link, or an NPM package, or even a downloadable copy</script>
     </head>
     <body>
         <div>
@@ -67,7 +40,7 @@
                 always be sanitized before being updated to prevent any unsafe code 
                 being executed by your web page
              -->
-            <div hx-target="this" hx-swap="innerHTML" hx-trigger="click" hx-get="/helloWorld" hx-ext="hx-gql" query="hello" vars="language:English">
+            <div hx-target="this" hx-swap="innerHTML" hx-trigger="click" hx-post="/helloWorld" hx-ext="hx-gql" query="hello" vars="language:English">
                 Click me!!
             </div>
         </div>

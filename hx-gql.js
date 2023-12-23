@@ -1,43 +1,51 @@
 import { makeGreaphQLRequest } from './plugin'
-import { getErrHandler, registerErrHandler, registerHandlerSetup, registerGraphQLEndpoint, registerQuerySetup } from './setup'
+import {
+    getErrHandler,
+    registerErrHandler,
+    registerHandlerSetup,
+    registerQuerySetup,
+    registerGraphQLEndpointSetup
+} from './setup'
 
 htmx.defineExtension('hx-gql', {
     onEvent : function (name, event) {
         if (name === "htmx:beforeRequest") {
-            let element = event.detail.etl;
+            let element = event.detail.elt;
 
             htmx.trigger(element, "htmx:afterRequest", event.detail);
+            return true;
         }
 
         if (name === "htmx:afterRequest") {
-            const verb = event.detail.requestConfig.verb;
-
             const path = event.detail.requestConfig.path;
 
-            const element = event.detail.etl;
+            const element = event.detail.elt;
 
-            makeGreaphQLRequest(verb, path, element).
-                then((result) => {
-                    let xhr = event.detail.xhr;
+            let result = makeGreaphQLRequest(path, element);
 
-                    xhr.resultType = "text";
+            if (result instanceof Error) {
+                handleError(element, result)
+                return true;
+            }
+
+            let xhr = event.detail.xhr;
+
+            xhr.resultType = "text";
+    
+            xhr.result = result;
             
-                    xhr.result = result.text();
-                    
-                    event.detail.xhr = xhr;
-                    return;
-                }).
-                catch((error) => {
-                    handleError(element, error);
-                    return;
-                })
+            event.detail.xhr = xhr;
+            return true;
         }
 
         if (name === "handleError") {
             // call custom error handler or log error
             let errHandler = getErrHandler();
-            return errHandler ? errHandler(event.detail.error) 
+            
+            errHandler ? errHandler(event.detail.error) 
                 : console.error(event.detail.error);
+            
+            return true;
         }
     }
 })
@@ -47,7 +55,7 @@ function handleError(element, error) {
 }
 
 export function registerGqlEndpoint(endpoint) {
-    registerGraphQLEndpoint(endpoint);
+    registerGraphQLEndpointSetup(endpoint);
 }
 
 export function registerHandler(key, handler) {
