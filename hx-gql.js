@@ -20,6 +20,10 @@ htmx.defineExtension('hx-gql', {
     encodeParameters : function(xhr, parameters, element) {
         xhr.overrideMimeType('text/json');
         return (parameters)
+    },
+
+    transformResponse : function(text, xhr, element) {
+        return handleResponse(element, text);
     }
 })
 

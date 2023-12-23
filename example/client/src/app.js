@@ -13,9 +13,5 @@ registerQuery("hello", helloQuery)
 registerHandler("helloWorld", (response) => {
     let resJSON = JSON.parse(response);
 
-    console.log(resJSON);
-
-    // let res = `<div>${resJSON.data.responses.res}</div>`;
-    //
-    // return res
+    return `<div>${resJSON.data.responses[0].res}</div>`;
 })

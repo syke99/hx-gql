@@ -40,13 +40,13 @@ export function setupOverride(event) {
     event.detail.target = getGqlEndpoint();
 }
 
-export function handleResponse(event) {
-    const handler = event.detail.elt.hasAttribute("handler") ? retrieveHandler(event.detail.elt.getAttribute("handler").replace("/", "")) : null;
+export function handleResponse(element, text) {
+    let handler = retrieveHandler(element.getAttribute("handler").replace("/", ""));
 
     if (handler === null) {
         // TODO: handle error
         return;
     }
 
-    // TODO: figure out how to override the htmx xhr call's response and responseText fields
+    return handler(text);
 }
