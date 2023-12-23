@@ -10,36 +10,6 @@
     </head>
     <body>
         <div>
-            <!-- 
-                1: to make a gql call from an element, include the hx-gql
-                extension via CDN, NPM, or a downloaded and included copy
-                pointed to via a path in a <script>'s "src" attribute and
-                add the hx-ext attribute to the desired element with the
-                value set to "hx-gql"
-
-                2: for each gql call, specify the handler to handle this
-                result of the call to the gql server; this handler just
-                needs to return HTML rendered using the result of the gql
-                call. this can be done with WASM components (with something
-                the Extism plugin system), simple string interpolation like 
-                the example above, or any other means of returning a rendered
-                HTML fragment
-
-                3: define which query you would like the gql call to make (which
-                the result of will then be passed to the specified handler) by
-                setting the "query" attribute value equal to the key of the desired
-                registered query (see "registerQuery example in script above").
-                Registered queries can be either queries or mutations.
-
-                4: if your query requires values to be passed for variables (such as
-                the $language variable in the above "hello" gql query), use the 
-                "vars" attribute, with whitespace seperated key:value pairs. It works
-                just like the "include-vals" extension, thus computed values can also
-                be obtained. NOTE: these values will be evaluated using JavaScript's
-                'eval' built-in function, so the value of the "vars" attribute should
-                always be sanitized before being updated to prevent any unsafe code 
-                being executed by your web page
-             -->
             <div hx-target="this" hx-swap="innerHTML" hx-trigger="click" hx-post="/gql" hx-ext="hx-gql" query="hello" handler="helloWorld" vars="language:English">
                 Click me!!
             </div>
