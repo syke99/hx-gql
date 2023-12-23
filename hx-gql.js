@@ -1,41 +1,50 @@
-import { makeGreaphQLRequest } from './plugin'
 import {
     getErrHandler,
     registerErrHandler,
     registerHandlerSetup,
     registerQuerySetup,
-    registerGraphQLEndpointSetup
+    registerGraphQLEndpointSetup,
+    getGqlEndpoint,
+    retrieveHandler
 } from './setup'
 
 htmx.defineExtension('hx-gql', {
     onEvent : function (name, event) {
-        if (name === "htmx:beforeRequest") {
+        if (name === "htmx:configRequest") {
+            event.detail.headers["Content-Type"] = "application/json";
+
             let element = event.detail.elt;
 
-            htmx.trigger(element, "htmx:afterRequest", event.detail);
-            return true;
+            let vals = element.getAttribute("vals") || null;
+
+            if (vals !== null) {
+                vals = eval(`{${vals}}`);
+            }
+
+            let query = element.getAttribute("query") || null;
+
+            if (query === null) {
+                // TODO: handle error
+            }
+
+            event.detail.parameters = JSON.stringify({
+                query: query,
+                variables: vals
+            });
+
+            event.detail.target = getGqlEndpoint();
         }
 
         if (name === "htmx:afterRequest") {
             const path = event.detail.requestConfig.path;
 
-            const element = event.detail.elt;
+            let handler = retrieveHandler(path.replace("/", ""));
 
-            let result = makeGreaphQLRequest(path, element);
-
-            if (result instanceof Error) {
-                handleError(element, result)
-                return true;
+            if (handler === null) {
+                // TODO: handle error
             }
 
-            let xhr = event.detail.xhr;
-
-            xhr.resultType = "text";
-    
-            xhr.result = result;
-            
-            event.detail.xhr = xhr;
-            return true;
+            event.detail.xhr.response = handler(event.detail.xhr.response);
         }
 
         if (name === "handleError") {
@@ -47,6 +56,11 @@ htmx.defineExtension('hx-gql', {
             
             return true;
         }
+    },
+
+    encodeParameters : function(xhr, parameters, element) {
+        xhr.overrideMimeType('text/json');
+        return (JSON.stringify(parameters))
     }
 })
 
