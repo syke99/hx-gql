@@ -24,9 +24,9 @@ export function setupOverride(event) {
 }
 
 export function handleResponse(event) {
-    const path = event.detail.requestConfig.path;
+    const handler = event.detail.elt.hasAttribute("handler") ? retrieveHandler(event.detail.elt.getAttribute("handler").replace("/", "")) : null;
 
-    let handler = retrieveHandler(path.replace("/", ""));
+    // let handler = retrieveHandler(path.replace("/", ""));
 
     if (handler === null) {
         // TODO: handle error
