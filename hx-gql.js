@@ -27,10 +27,6 @@ htmx.defineExtension('hx-gql', {
     }
 })
 
-// function handleError(element, error) {
-//     htmx.trigger(element, "handleError", { error: error });
-// }
-
 export function registerGqlEndpoint(endpoint) {
     registerGraphQLEndpointSetup(endpoint);
 }

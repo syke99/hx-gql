@@ -29,7 +29,7 @@ func main() {
 
 	static, _ := fs.Sub(f, "client/dist")
 
-	http.Handle("/", http.StripPrefix("/i", http.FileServer(http.FS(static))))
+	http.Handle("/", http.StripPrefix("/", http.FileServer(http.FS(static))))
 	http.Handle("/script", func() http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {
 			fb, er := f.ReadFile("client/dist/main.js")
