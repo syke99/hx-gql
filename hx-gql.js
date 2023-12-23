@@ -15,21 +15,11 @@ htmx.defineExtension('hx-gql', {
         if (name === "htmx:afterRequest") {
             handleResponse(event);
         }
-
-        // if (name === "handleError") {
-        //     // call custom error handler or log error
-        //     let errHandler = getErrHandler();
-            
-        //     errHandler ? errHandler(event.detail.error) 
-        //         : console.error(event.detail.error);
-            
-        //     return true;
-        // }
     },
 
     encodeParameters : function(xhr, parameters, element) {
         xhr.overrideMimeType('text/json');
-        return (JSON.stringify(parameters))
+        return (parameters)
     }
 })
 
