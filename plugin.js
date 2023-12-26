@@ -48,5 +48,5 @@ export function handleResponse(element, text) {
         return;
     }
 
-    return handler(text);
+    return handler(element, text);
 }

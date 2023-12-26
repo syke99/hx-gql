@@ -10,8 +10,10 @@ const helloQuery = `    query Response($language: String!)  {
 
 registerQuery("hello", helloQuery)
 
-registerHandler("helloWorld", (response) => {
+registerHandler("helloWorld", (element, response) => {
     let resJSON = JSON.parse(response);
+
+    console.log(element)
 
     return `<div>${resJSON.data.responses[0].res}</div>`;
 })
