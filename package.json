@@ -1,6 +1,6 @@
 {
   "name": "hx-gql",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "an extension to use GraphQL endpoints + custom result handlers with HTMX",
   "main": "hx-gql.js",
   "directories": {

@@ -11,10 +11,6 @@ htmx.defineExtension('hx-gql', {
         if (name === "htmx:configRequest") {
             setupOverride(event);
         }
-
-        if (name === "htmx:afterRequest") {
-            handleResponse(event);
-        }
     },
 
     encodeParameters : function(xhr, parameters, element) {
