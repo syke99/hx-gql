@@ -41,10 +41,9 @@ export function setupOverride(event) {
 }
 
 export function handleResponse(element, text) {
-    let handler = retrieveHandler(element.getAttribute("handler").replace("/", ""));
+    let handler = element.hasAttribute("handler") ? retrieveHandler(element.getAttribute("handler").replace("/", "")) : null;
 
     if (handler === null) {
-        // TODO: handle error
         return;
     }
 
